@@ -13,7 +13,7 @@
 
 ## 환경설정
 
-- mock 사용
+- mock
 - npm install
 - npm install react-router-dom
 - npm install redux
@@ -22,3 +22,4 @@
 - npm install redux-thunk
 - npm install redux-logger
 - npm install redux-devtools-extension
+- axios
