@@ -12,7 +12,7 @@ import { createActions, handleActions } from 'redux-actions';
 
 const initialState = {};
 
-export const LOGIN = 'users/LOGIN';
+export const LOGIN = 'user/LOGIN';
 export const RESET_LOGIN_USER = 'user/RESET_LOGIN_USER';
 
 export const { user : { login, resetLoginUser }} = createActions({

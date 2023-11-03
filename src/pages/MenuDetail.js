@@ -1,45 +1,44 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import Menu from '../components/items/Menu';
 import { useEffect } from "react";
-import { callGetMenusAPI } from "../apis/MenuAPICalls";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { callDeleteMenuAPI } from "../apis/MenuAPICalls";
 
 function MenuDetail() {
 
-    const menu = useParams();
-    
-    const menuId = Number(menu.menuId);
-
-    const result = useSelector(state => state.menu);
-
-    const selectedMenu = result[menuId - 1];
-    
+    const loginStatus = !!localStorage.getItem('isLogin');
+    const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { id } = useParams();
+    const result = useSelector(state => state.menuReducer);
+
+    const updateHandler = () => navigate(`/menu/modify/${id}`);
+    const deleteHandler = () => dispatch(callDeleteMenuAPI(id));
 
     useEffect(
         () => {
-            dispatch(callGetMenusAPI());
+            if(result.delete) {
+                alert('메뉴 삭제요!');
+                navigate(`/menu`);
+            }
         },
-        [menuId]
+        [result]
     );
-
-    if(!selectedMenu) {
-        return <div>없는 메뉴임.</div>;
-    }
 
     return (
         <>
-            <h2>메뉴상세</h2>
-            <img src={ selectedMenu.detail.image } style={{width:'500px'}}/>
-            <h3>이름은!.. { selectedMenu.menuName }!!</h3>
-            <h3>가격은!.. { selectedMenu.menuPrice }!!</h3>
-            <h3>종류는!.. { selectedMenu.categoryName }!!</h3>
-            <h3>설명하자면!.. { selectedMenu.detail.description }!!</h3>
-            <Link to={-1}>
-                <button>뒤로가기</button>
-            </Link>
+            <h1>메뉴 상세!</h1>
+            <h1>
+                { (loginStatus) &&
+                <>
+                    <button onClick={ updateHandler }>메뉴 수정</button>
+                    <button onClick={ deleteHandler }>메뉴 삭제</button>
+                </>
+                }
+            </h1>
+            <Menu id={ id }/>
         </>
-    )
+    );
 }
 
 export default MenuDetail;

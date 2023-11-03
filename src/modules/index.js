@@ -3,7 +3,7 @@ import menuReducer from "./MenuModule";
 import userReducer from "./UserModule";
 
 const rootReducer = combineReducers({
-    menu: menuReducer, user: userReducer
+    menuReducer, userReducer
 });
 
 export default rootReducer

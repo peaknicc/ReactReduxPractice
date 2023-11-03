@@ -3,9 +3,9 @@ import { Navigate } from 'react-router-dom';
 
 function MyPage() {
 
-    const loggedIn = useSelector((state) => state.user.loggedIn);
+    const loginStatus = localStorage.getItem('isLogin');
 
-    if(!loggedIn) {
+    if(!loginStatus) {
         return <Navigate to="/login"/>;
     }
 

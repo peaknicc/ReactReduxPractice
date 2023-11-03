@@ -1,12 +1,57 @@
-import { useState } from "react";
-import { loginAPI } from "../../apis/UserAPICalls";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { LOGGED_IN } from "../../modules/UserModule";
+import { useNavigate } from "react-router-dom";
+import { callLoginAPI } from "../../apis/UserAPICalls";
+import { resetLoginUser } from "../../modules/UserModule";
 
 
 function LoginForm() {
 
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const result = useSelector(state => state.userReducer);
+    const loginStatus = !!localStorage.getItem('isLogin');
+
+    const [loginInfo, setLoginInfo] = useState(
+        {
+            id: '',
+            password: ''
+        }
+    );
+
+    const onChangeHandler = (e) => {
+        setLoginInfo(
+            {
+                ...loginInfo,
+                [e.target.name]: e.target.value
+            }
+        );
+    }
+
+    const onClickHandler = () => {
+        dispatch(callLoginAPI(loginInfo));
+    }
+
+    useEffect(
+        () => {
+            if(result?.message) {
+                alert('아이디, 비번 확인 ㄱ');
+                setLoginInfo(
+                    {
+                        id: '',
+                        password: ''
+                    }
+                );
+                dispatch(resetLoginUser());
+                // 실패시 등록하려던 user의 정보 초기화
+            } else if(loginStatus) {
+                navigate('/');
+                // login성공시 main으로 직행
+            }
+        },
+        [result]
+    );
+/* 
     const [id, setId] = useState(localStorage.getItem('id') || '');
     const [password, setPassword] = useState(localStorage.getItem('password') || '');
     
@@ -30,29 +75,29 @@ function LoginForm() {
         },
         [loggedIn]
     );
-
+ */
     return(
             <>
-                {loggedIn? 
-                        (
-                            <>
-                                <p>ㅎㅇ, {localStorage.getItem('id')}님</p>
-                            </>
-                        ) :  
-                        (
-                            <>
-                                <label>ID : </label>
-                                <input type="text" value={id} onChange={(e) => setId(e.target.value)}/>
-                                <br/>
-                                <label>PWD : </label>
-                                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                                <br/>
-                                <button onClick={handleLogin}>로그인</button>
-                            </>
-                        )
-                    }
-                </>
-            );
+                {!loginStatus? 
+                                (
+                                    <>
+                                        <label>ID : </label>
+                                        <input type="text" name="id" value={ loginInfo.id } onChange={onChangeHandler}/> &nbsp;&nbsp;&nbsp;
+                                        <br/>
+                                        <label>PWD : </label>
+                                        <input type="password" name="password" value={ loginInfo.password } onChange={onChangeHandler}/>
+                                        <br/>
+                                        <button onClick={ onClickHandler }>로그인</button>
+                                    </>
+                                ) :  
+                                (
+                                    <>
+                                        <p>ㅎㅇ, { loginInfo.id }님</p>
+                                    </>
+                                )
+                            }
+            </>
+        );
 }
 
 export default LoginForm;

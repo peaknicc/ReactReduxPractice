@@ -1,5 +1,6 @@
-import { useDispatch } from "react-redux";
-import { GET_USERS, LOGGED_IN } from "../modules/UserModule";
+import { request } from "./Api";
+// API에 request가 있었네..
+import { login } from "../modules/UserModule"
 
 
 /* 

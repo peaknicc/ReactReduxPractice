@@ -1,26 +1,67 @@
-import { GET_MENUS } from "../modules/MenuModule";
+import { request } from "./Api";
+import { getMenulist, getMenu, registMenu, modifyMenu, deleteMenu } from "../modules/MenuModule"
 
-export function callGetMenusAPI(url, params) {
+export function callGetMenuListAPI() {
 
-    const requestURL = url || 'http://localhost:4000/menu';
+    console.log('getMenuList api calls...');
 
-    return async function getMenus(dispatch, getState) {
-        const result = await fetch(requestURL).then(res => res.json());
+    return async (dispatch, getState) => {
+        const result = await request('GET', '/menu');
+        console.log('getMenuList result : ', result);
 
-        dispatch({type: GET_MENUS, payload: result});
-    };
+        dispatch(getMenulist(result));
+    }
 }
 
-export function searchMenuAPI(menuName) {
-    const requestURL ='http://localhost:4000/menu';
+export function callGetMenuAPI(id) {
 
-    return async function getMenus(dispatch) {
-        const menus = await fetch(requestURL).then(res => res.json());
-        
-        const searchedMenus = menus.filter(menu => menu.menuName.match(menuName));
+    console.log('getMenu api calls...');
 
-        dispatch({type: GET_MENUS, payload: searchedMenus});
+    return async (dispatch, getState) => {
+        console.log('id는 : ', id)
 
+        const result = await request('GET', `/menu/${id}`);
+        console.log('getMenu result : ', result);
+
+        dispatch(getMenu(result));
     }
+}
 
+export function callRegistMenuAPI(menu) {
+
+    console.log('registMenu api calls...');
+    
+    return async (dispatch, getState) => {
+
+        const result = await request('POST', '/menu/', menu);
+        console.log('registMenu result : ', result);
+
+        dispatch(registMenu(result));
+    }
+}
+
+export function callModifyMenuAPI(menu) {
+    
+    console.log('modifyMenu api calls.....');
+
+    return async (dispatch, getState) => {
+
+        const result = await request('PUT', `/menu/${menu.id}`, menu);
+        console.log('modifyMenu result : ', result);
+
+        dispatch(modifyMenu(result));
+    }
+}
+
+export function callDeleteMenuAPI(id) {
+
+    console.log('deleteMenu api calls....');
+
+    return async (dispatch, getState) => {
+
+        const result = await request('DELETE', `/menu/${id}`);
+        console.log('deleteMenu result : ', result);
+
+        dispatch(deleteMenu(result));
+    }
 }
