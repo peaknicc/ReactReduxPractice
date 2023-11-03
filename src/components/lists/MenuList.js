@@ -1,28 +1,28 @@
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import MenuItem from "../items/MenuItem";
-import { searchMenuAPI } from "../../apis/MenuAPICalls";
-import { useEffect } from "react";
+import { callGetMenuListAPI } from "../../apis/MenuAPICalls";
 
-function MenuList({searchTerm}) {
+function MenuList() {
 
-    const result = useSelector(state => state.menu);
-
-    const menus = result;
-
+    const result = useSelector(state => state.menuReducer);
+    const menuList = result.menulist;
     const dispatch = useDispatch();
+
+    console.log(menuList);
 
     useEffect(
         () => {
             // dispatch(callGetMenusAPI());
-            dispatch(searchMenuAPI(searchTerm));
+            dispatch(callGetMenuListAPI());
         },
         []
     );
 
     return(
-        menus && (
+        menuList && (
             <div className="menuBox">
-                { menus.map(menu => <MenuItem key={ menu.id } menu={ menu }/>)}
+                { menuList.map(menu => <MenuItem key={ menu.id } menu={ menu }/>)}
             </div>
         )
     );

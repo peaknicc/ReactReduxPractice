@@ -1,34 +1,40 @@
 import { createActions, handleActions } from 'redux-actions';
 
-const initialState = {
-        "id": "",
-        "password": "",
-        "nickname": "",
-        loggedIn: false
-    };
+/* 
+    기존 내가 했던 방식에서 선생님 예제를 보고 똑같이 만듦.
+    굳이 로그아웃에 대한 reducer를 만들 필요가 없었고
+    action function을 export 하지 않았었음.
+    
+    간단하게 LOGIN reducer function에서 localStorage에 setItem 해주면 되는거였나봄.
+    RESET_LOGIN_USER를 통해서 로그아웃을 하는거 -> initialState를 빈 객체로 설정함으로써
+    그냥 초기화시키는거임
+*/
 
-export const GET_USERS = 'users/GET_USERS';
-export const LOGGED_IN = 'users/LOGGED_IN';
-export const LOGGED_OUT = 'users/LOGGED_OUT';
+const initialState = {};
 
-const actions = createActions({
-    [GET_USERS]: () => {},
-    [LOGGED_IN]: (loggedIn) => ({loggedIn}),
-    [LOGGED_OUT]: (loggedIn) => ({loggedIn})
+export const LOGIN = 'user/LOGIN';
+export const RESET_LOGIN_USER = 'user/RESET_LOGIN_USER';
+
+export const { user : { login, resetLoginUser }} = createActions({
+    [LOGIN]: (res) => ({ res }),
+    [RESET_LOGIN_USER]: (res = initialState) => ({ res })
 });
 
 const userReducer = handleActions(
     {
-        [GET_USERS]: (state, { payload }) => {
-            return { ...state, ...payload};
+        [LOGIN]: (state, { payload : { res }}) => {
+
+            if(res) {
+                localStorage.setItem("isLogin", true);
+            } else {
+                res = { message: 'LOGIN_FAIL'};
+            }
+
+            return res;
         },
-        [LOGGED_IN]: (state, { payload }) => {
-            localStorage.setItem('loggedIn', payload? 'true' : 'false');
-            return { ...state, ...payload };
-        },
-        [LOGGED_OUT]: (state, { payload }) => {
-            localStorage.setItem('loggedIn', payload? 'false' : 'true');
-            return { ...state, loggedIn: payload };
+        [RESET_LOGIN_USER]: (state, { payload : { res }}) => {
+
+            return res;
         }
     },
     initialState

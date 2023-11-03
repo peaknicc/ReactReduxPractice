@@ -1,6 +1,6 @@
 function Header() {
     return(
-        <h1>머리요</h1>
+        <h1>수련중</h1>
     );
 }
 
